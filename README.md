@@ -18,7 +18,8 @@ This repository provides code to reproduce the results from the **SMUG** method 
   '''bash 
   pip install -r requirements.txt
 
-3 Usage Download the dataset from Dropbox: Data avaliable on https://www.dropbox.com/scl/fi/801dxovhbkp2bkl2krz5x/NEW_KSPACE.zip?rlkey=4u3b32f6c4pfujsv3kp7z5bdk&st=hwe9thrv&dl=0 
+3 Dataset:
+fastMRI Dataset website https://fastmri.med.nyu.edu/ (Download will take some time)
 
 4 Refer to the train_SMUG.py script for training the SMUG model.
 Additional scripts such as test.py and train_RSE2E.py provide testing and alternative training routines.
