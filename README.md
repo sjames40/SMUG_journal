@@ -1,4 +1,4 @@
-# SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling (TMI 2023)
+# SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling (TMI 2023) [[Paper](https://arxiv.org/abs/2303.12735)]
 
 Repository with code to reproduce the results for **SMUG** in our paper:
 
