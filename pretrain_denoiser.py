@@ -1,3 +1,7 @@
+""" 
+Add some comments
+"""
+
 import torch
 import torch.nn as nn
 import numpy as np
@@ -32,11 +36,6 @@ ssim_loss = pytorch_msssim.SSIM(data_range=2.0, channel=2).to(device)
 optimG = torch.optim.Adam(netG.parameters(), lr=opt.lr, betas=[0.5, 0.999])
 scheduler = torch.optim.lr_scheduler.LambdaLR(optimG, lr_lambda=lambda_rule)
 
-# def Recon(input, epsilon=0.01):
-#     input = input + torch.normal(0, epsilon, input.shape).to(device)
-#     torch.clamp_(input, min=-1, max=1)
-#     output = netG(input)
-#     return output
 
 def Recon(input, epsilon=0.01, add_noise=True):
     if add_noise and epsilon > 0:
