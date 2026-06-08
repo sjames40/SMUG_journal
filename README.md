@@ -11,9 +11,9 @@ This repository contains code for reproducing the results of SMUG and the upcomi
 
 ## Overview
 
-This repository provides code to reproduce the results from the **SMUG** method for robust MRI reconstruction. SMUG systematically integrates **Regularization by Smoothing (RS)** with **MoDL** using a deep unrolled architecture.
+This repository provides code to reproduce the results from the **SMUG** method for robust MRI reconstruction. SMUG systematically integrates **Regularization by Smoothing (RS)** with deep unrolled reconstruction architectures.
 
-The method addresses the instabilities of MoDL by optimizing where to apply randomized smoothing in the unrolled architecture and introduces an unrolling loss to improve training efficiency.
+The method addresses the instabilities of unrolled networks by optimizing where to apply randomized smoothing in the unrolled architecture and introduces an unrolling loss to improve training efficiency.
 
 ---
 
