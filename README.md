@@ -93,8 +93,8 @@ The full training and evaluation pipeline consists of the following steps:
 
 1. Prepare dataset and masks.
 2. Pretrain the denoiser.
-3. Finetune SMUG.
-4. Finetune Weighted SMUG.
+3. Fine-tune SMUG.
+4. Fine-tune Weighted SMUG.
 5. Evaluate.
 
 ---
@@ -154,9 +154,9 @@ This checkpoint will be used to initialize the denoiser in SMUG and Weighted SMU
 
 ---
 
-## Step 3: Finetune SMUG
+## Step 3: Fine-tune SMUG
 
-Finetune SMUG using the pretrained denoiser from Step 2.
+Fine-tune SMUG using the pretrained denoiser from Step 2.
 
 ```bash
 
@@ -187,7 +187,7 @@ python train_SMUG.py \
 
 ---
 
-## Step 4: Finetune Weighted SMUG
+## Step 4: Fine-tune Weighted SMUG
 
 Weighted SMUG extends ordinary SMUG by introducing a trainable weighting encoder.
 
