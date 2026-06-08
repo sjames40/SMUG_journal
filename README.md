@@ -259,7 +259,7 @@ For Weighted SMUG, use the combined checkpoint produced by `train_Weighted_SMUG.
 
 ---
 
-# Citation
+# Citation - (IEEE)
 
 If you use this code, please cite the SMUG paper:
 
