@@ -20,13 +20,13 @@ The method addresses the instabilities of unrolled networks by optimizing where 
 ## Features
 
 * **Robust MRI Reconstruction**
-  Enhances MoDL robustness through systematic integration of randomized smoothing.
+  Enhances robustness of unrolled networks such as MoDL through systematic integration of randomized smoothing.
 
 * **Deep Unrolled Architecture**
   Uses unrolling techniques for efficient MRI reconstruction.
 
 * **Instability Mitigation**
-  Reduces major instability issues in MoDL under perturbations and adversarial attacks.
+  Reduces major instability issues in unrolled networks under perturbations and adversarial attacks.
 
 * **Weighted SMUG**
   Extends SMUG by using a trainable weighting encoder to perform weighted randomized smoothing.
