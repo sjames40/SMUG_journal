@@ -220,7 +220,7 @@ The ordinary SMUG checkpoint does **not** contain the trainable weighting encode
 
 ---
 
-## Step 5: Evaluate Clean, Random-Noise, and PGD Robustness
+## Step 5: Evaluate
 
 Use `test.py` to evaluate clean reconstruction performance, random-noise robustness, and PGD robustness.
 
