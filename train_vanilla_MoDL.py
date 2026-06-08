@@ -13,12 +13,13 @@ from options.train_options import TrainOptions
 
 opt = TrainOptions().parse()
 
-device = torch.device("cuda:" + str(opt.gpu_ids[0]) if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:" + str(opt.gpu_ids[0]) if torch.cuda.is_available() and len(opt.gpu_ids) > 0 else "cpu")
 
-netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=2)
+netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=opt.n_res_blocks)
 init_weights(netG, init_type='normal', init_gain=0.02)
 netG = netG.float()
-netG = nn.DataParallel(netG, device_ids=opt.gpu_ids)
+if len(opt.gpu_ids) > 0 and torch.cuda.is_available():
+    netG = nn.DataParallel(netG, device_ids=opt.gpu_ids)
 netG = netG.to(device)
 
 def lambda_rule(epoch):
@@ -116,7 +117,8 @@ for epoch in tqdm(range(opt.epoch)):
 
     if vali_rmse_min is None or vali_rmse_total < vali_rmse_min:
         vali_rmse_min = vali_rmse_total
-        torch.save(netG.module.state_dict(), os.path.join(expr_dir, 'vali_best.pth')) # .module when using DataParallel
+        state_dict = netG.module.state_dict() if isinstance(netG, nn.DataParallel) else netG.state_dict()
+        torch.save(state_dict, os.path.join(expr_dir, 'vali_best.pth'))
         print(f'saving vali best model at epoch {epoch}')
 
     train_rmse.append(train_rmse_total / opt.trainSize * opt.batchSize)

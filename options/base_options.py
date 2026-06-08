@@ -16,6 +16,7 @@ class BaseOptions():
         parser.add_argument('--Lambda', type=float, default=1, help='topletiz constraint in MODL')
         parser.add_argument('--blockIter', type=int, default=8, help='number of iterations in MODL')
         parser.add_argument('--CGtol', type=float, default=1e-6, help='Conjugate Gradient tolerance')
+        parser.add_argument('--n_res_blocks', type=int, default=3, help='number of DIDN down-up blocks')
         parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         self.initialized = True
         return parser

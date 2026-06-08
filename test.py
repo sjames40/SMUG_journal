@@ -13,9 +13,9 @@ opt = TestOptions().parse()
 
 opt.batchSize = 1
 
-device = torch.device(('cuda:' + str(opt.gpu_ids[0])) if torch.cuda.is_available() else 'cpu')
+device = torch.device(('cuda:' + str(opt.gpu_ids[0])) if torch.cuda.is_available() and len(opt.gpu_ids) > 0 else 'cpu')
 
-netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=2)
+netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=opt.n_res_blocks)
 netG.load_state_dict(torch.load(opt.netGpath, map_location=device))
 netG = netG.float().to(device)
 
@@ -27,6 +27,11 @@ ssim_loss = pytorch_msssim.SSIM(data_range=2.0, channel=2).to(device)
 
 def CG(output, tol, L, smap, mask, alised_image):
     return networks.CG.apply(output, tol, L, smap, mask, alised_image)
+
+
+def average_repeated_batch(tensor, batch_size, num_sample):
+    return tensor.reshape(num_sample, batch_size, *tensor.shape[1:]).mean(dim=0)
+
 
 def Recon(cg_iter, smap, mask, input, smoothing, num_sample, epsilon):
     output_CG = input
@@ -44,10 +49,7 @@ def Recon(cg_iter, smap, mask, input, smoothing, num_sample, epsilon):
             output_NN = netG(output_CG)
             output_CG = CG(output_NN, tol=opt.CGtol, L=opt.Lambda, smap=smap.repeat(num_sample, 1, 1, 1, 1), mask=mask.repeat(num_sample, 1, 1, 1), alised_image=input_i)
         
-        output_final = torch.zeros_like(input).to(device)
-        for j in range(opt.batchSize):
-            output_final[j, :, :, :] = torch.sum(output_CG[j::opt.batchSize, :, :, :], 0)
-        output_CG = output_final / num_sample
+        output_CG = average_repeated_batch(output_CG, input.shape[0], num_sample)
     elif smoothing == 'SMUGv0':
         for _ in range(cg_iter):
             output_CG = output_CG.repeat(num_sample, 1, 1, 1)
@@ -57,28 +59,21 @@ def Recon(cg_iter, smap, mask, input, smoothing, num_sample, epsilon):
             output_NN = netG(noised_input)
             output_CG = CG(output_NN, tol=opt.CGtol, L=opt.Lambda, smap=smap.repeat(num_sample, 1, 1, 1, 1), mask=mask.repeat(num_sample, 1, 1, 1), alised_image=input.repeat(num_sample, 1, 1, 1))
 
-            output_CG_final = torch.zeros_like(input).to(device)
-            for j in range(opt.batchSize):
-                output_CG_final[j, :, :, :] = torch.sum(output_CG[j::opt.batchSize, :, :, :], 0)
-            output_CG = output_CG_final / num_sample
+            output_CG = average_repeated_batch(output_CG, input.shape[0], num_sample)
     elif smoothing == 'SMUG':
-        # the same noises are used in every iteration/unrolling step
-        noises = torch.normal(0, epsilon, output_CG.repeat(num_sample, 1, 1, 1).shape).to(device)
         for _ in range(cg_iter):
             output_CG = output_CG.repeat(num_sample, 1, 1, 1)
+            noises = torch.normal(0, epsilon, output_CG.shape).to(device)
             noised_input = torch.clamp(noises + output_CG, min=-1, max=1)
 
             output_NN = netG(noised_input)
-            output_NN_final = torch.zeros_like(input).to(device)
-            for j in range(opt.batchSize):
-                output_NN_final[j, :, :, :] = torch.sum(output_NN[j::opt.batchSize, :, :, :], 0)
-            output_NN_final /= num_sample
+            output_NN_final = average_repeated_batch(output_NN, input.shape[0], num_sample)
 
             output_CG = CG(output_NN_final, tol=opt.CGtol, L=opt.Lambda, smap=smap, mask=mask, alised_image=input)
 
     return output_CG
 
-def PGD(pgd_steps, cg_iter, smap, mask, input, label, crition, eps, alpha, norm='linfty'):
+def PGD(pgd_steps, cg_iter, smap, mask, input, label, crition, eps, alpha, smoothing, num_sample, smoothing_epsilon, norm='linfty'):
     clamp_fn = l2_clamp if norm == 'l2' else linfty_clamp
 
     netG.requires_grad_(False)
@@ -91,7 +86,7 @@ def PGD(pgd_steps, cg_iter, smap, mask, input, label, crition, eps, alpha, norm=
 
     for _ in range(pgd_steps):
         input.requires_grad = True
-        output = Recon(cg_iter, smap, mask, input, 'none', opt.num_sample, opt.smoothing_epsilon)
+        output = Recon(cg_iter, smap, mask, input, smoothing, num_sample, smoothing_epsilon)
         loss = crition(output, label)
         loss.backward()
         adv_images = input + alpha * input.grad.sign()
@@ -158,7 +153,7 @@ for i, (test_direct, test_target, test_smap, test_mask) in enumerate(test_loader
     
     for ii, epsilon in enumerate(epsilons):
         adv_test_input = test_input.clone()
-        adv_test_input = PGD(opt.pgd_steps, opt.blockIter, test_smap, test_mask, adv_test_input, test_label, loss_fn, epsilon, epsilon / 3)
+        adv_test_input = PGD(opt.pgd_steps, opt.blockIter, test_smap, test_mask, adv_test_input, test_label, loss_fn, epsilon, epsilon / 3, opt.smoothing, opt.num_sample, opt.smoothing_epsilon)
         with torch.no_grad():
             adv_test_result = Recon(opt.blockIter, test_smap, test_mask, adv_test_input, opt.smoothing, opt.num_sample, opt.smoothing_epsilon)
             adv_psnr_test = PSNR(test_label, adv_test_result)
@@ -202,7 +197,7 @@ for i, (test_direct, test_target, test_smap, test_mask) in enumerate(test_loader
         plt.title('noise', fontsize='x-small')
         plt.axis('off')
 
-        plt.subplot(1, 4, 3)
+        plt.subplot(1, 4, 4)
         plt.imshow(np.abs(adv_vis_img), cmap='gray')
         plt.title('robust', fontsize='x-small')
         plt.axis('off')

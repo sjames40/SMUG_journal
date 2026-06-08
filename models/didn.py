@@ -192,7 +192,7 @@ class DIDN(nn.Module):
         factor = 2 ** num_pool_layers
         imshape = np.array(tensor.shape[-2:])
         paddings = np.ceil(imshape / factor) * factor - imshape
-        paddings = paddings.astype(np.int) // 2
+        paddings = paddings.astype(int) // 2
         p2d = (paddings[1], paddings[1], paddings[0], paddings[0])
         return p2d
 

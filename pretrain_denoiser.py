@@ -12,11 +12,14 @@ from options.train_options import TrainOptions
 
 opt = TrainOptions().parse()
 
-device = torch.device("cuda:" + str(opt.gpu_ids[0]) if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:" + str(opt.gpu_ids[0]) if torch.cuda.is_available() and len(opt.gpu_ids) > 0 else "cpu")
 
-netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=2)
+netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=opt.n_res_blocks)
 init_weights(netG, init_type='normal', init_gain=0.02)
-netG = netG.float().to(device)
+netG = netG.float()
+if len(opt.gpu_ids) > 1:
+    netG = nn.DataParallel(netG, device_ids=opt.gpu_ids)
+netG = netG.to(device)
 
 def lambda_rule(epoch):
     lr_l = 1.0 - max(0, epoch + 1 - 20) / float(opt.epoch + 1 - 20)
@@ -29,9 +32,17 @@ ssim_loss = pytorch_msssim.SSIM(data_range=2.0, channel=2).to(device)
 optimG = torch.optim.Adam(netG.parameters(), lr=opt.lr, betas=[0.5, 0.999])
 scheduler = torch.optim.lr_scheduler.LambdaLR(optimG, lr_lambda=lambda_rule)
 
-def Recon(input, epsilon=0.01):
-    input = input + torch.normal(0, epsilon, input.shape).to(device)
-    torch.clamp_(input, min=-1, max=1)
+# def Recon(input, epsilon=0.01):
+#     input = input + torch.normal(0, epsilon, input.shape).to(device)
+#     torch.clamp_(input, min=-1, max=1)
+#     output = netG(input)
+#     return output
+
+def Recon(input, epsilon=0.01, add_noise=True):
+    if add_noise and epsilon > 0:
+        noise = torch.randn_like(input) * epsilon
+        input = input + noise
+        input = torch.clamp(input, min=-1, max=1)
     output = netG(input)
     return output
 
@@ -54,11 +65,13 @@ vali_size = len(test_loader.dataset)
 
 expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
 
-for epoch in tqdm(range(opt.epoch)):
+for epoch in tqdm(range(opt.epoch), desc="Epoch"):
     train_rmse_total = 0.
     train_psnr_total = 0.
     train_ssim_total = 0.
-    for _, target, _, _ in train_loader:
+
+    netG.train()
+    for i, (_, target, _, _) in enumerate(tqdm(train_loader, desc=f"Train Epoch {epoch}", leave=False)):
         label = target.to(device).float()
 
         output = Recon(input=label, epsilon=opt.smoothing_epsilon)
@@ -70,18 +83,21 @@ for epoch in tqdm(range(opt.epoch)):
 
         psnr_train = PSNR(label, output)
         ssim_train = ssim_loss(label, output)
-        train_rmse_total += np.sqrt(float(mse_loss(output, label)))
-        train_psnr_total += float(psnr_train)
-        train_ssim_total += float(ssim_train)
+
+        train_rmse_total += np.sqrt(mse_loss(output, label).detach().item())
+        train_psnr_total += psnr_train.detach().item() if torch.is_tensor(psnr_train) else float(psnr_train)
+        train_ssim_total += ssim_train.detach().item()
 
     vali_rmse_total = 0.
     vali_psnr_total = 0.
     vali_ssim_total = 0.
+    netG.eval()
     for _, vali_target, _, _ in test_loader:
         vali_label = vali_target.to(device).float()
 
         with torch.no_grad():
-            vali_result = Recon(input=vali_label, epsilon=opt.smoothing_epsilon)
+            # vali_result = Recon(input=vali_label, epsilon=opt.smoothing_epsilon)
+            vali_result = Recon(vali_label, epsilon=0, add_noise=True)
 
             psnr_vali = PSNR(vali_label, vali_result)
             ssim_vali = ssim_loss(vali_label, vali_result)
@@ -95,7 +111,8 @@ for epoch in tqdm(range(opt.epoch)):
 
     if vali_rmse_min is None or vali_rmse_total < vali_rmse_min:
         vali_rmse_min = vali_rmse_total
-        torch.save(netG.state_dict(), os.path.join(expr_dir, 'vali_best.pth'))
+        state_dict = netG.module.state_dict() if isinstance(netG, nn.DataParallel) else netG.state_dict()
+        torch.save(state_dict, os.path.join(expr_dir, 'vali_best.pth'))
         print(f'saving vali best model at epoch {epoch}')
 
     train_rmse.append(train_rmse_total / train_size * opt.batchSize)
