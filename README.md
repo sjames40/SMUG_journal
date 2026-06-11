@@ -267,19 +267,13 @@ For Weighted SMUG, use the combined checkpoint produced by `train_Weighted_SMUG.
 
 ---
 
-# Citation - (IEEE)
+# Citation 
 
 If you use this code, please cite the SMUG paper:
 
 ```bibtex
-@article{smug2023,
-  title={SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling},
-  author={},
-  journal={arXiv preprint arXiv:2303.12735},
-  year={2023}
-}
 
-@ARTICLE{11199960,
+@article{smugjournal,
   title={Robust MRI Reconstruction by Smoothed Unrolling (SMUG)},
   author={Liang, Shijun and Nguyen, Van Hoang Minh and Jia, Jinghan and Alkhouri, Ismail R. and Liu, Sijia and Ravishankar, Saiprasad},
   journal={IEEE Journal of Selected Topics in Signal Processing}, 
