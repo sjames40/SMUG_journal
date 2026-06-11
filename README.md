@@ -1,5 +1,7 @@
 # SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling (TMI 2023) [[Paper](https://arxiv.org/abs/2303.12735)]
 
+# Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
+
 Repository with code to reproduce the results for **SMUG** in our paper:
 
 **SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling**
@@ -270,6 +272,17 @@ If you use this code, please cite the SMUG paper:
   journal={arXiv preprint arXiv:2303.12735},
   year={2023}
 }
+
+@ARTICLE{11199960,
+  title={Robust MRI Reconstruction by Smoothed Unrolling (SMUG)},
+  author={Liang, Shijun and Nguyen, Van Hoang Minh and Jia, Jinghan and Alkhouri, Ismail R. and Liu, Sijia and Ravishankar, Saiprasad},
+  journal={IEEE Journal of Selected Topics in Signal Processing}, 
+  year={2025},
+  volume={19},
+  number={7},
+  pages={1558-1573},
+}
+
 ```
 
 Please update the BibTeX entry with the official TMI citation when available.
