@@ -1,4 +1,4 @@
-[[# Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
+# Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
 
 [![IEEE JSTSP](https://img.shields.io/badge/IEEE-JSTSP-blue.svg)](https://ieeexplore.ieee.org/document/11199960)
 [![arXiv](https://img.shields.io/badge/arXiv-2312.07784-b31b1b.svg)](https://arxiv.org/abs/2312.07784)
