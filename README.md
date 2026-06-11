@@ -1,13 +1,19 @@
-# SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling (TMI 2023) [[Paper](https://arxiv.org/abs/2303.12735)]
-
 # Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
+
+[![IEEE JSTSP](https://img.shields.io/badge/IEEE-JSTSP-blue.svg)](https://ieeexplore.ieee.org/document/11199960)
+[![arXiv](https://img.shields.io/badge/arXiv-2312.07784-b31b1b.svg)](https://arxiv.org/abs/2312.07784)
 
 Repository with code to reproduce the results for **SMUG** in our paper:
 
-**SMUG: Towards Robust MRI Reconstruction by Smoothed Unrolling**
-Paper link: https://arxiv.org/abs/2303.12735
+### 1. Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
 
-This repository contains code for reproducing the results of SMUG and the upcoming journal version.
+**IEEE Journal of Selected Topics in Signal Processing**
+
+Paper link: [IEEE Xplore](https://ieeexplore.ieee.org/document/11199960)
+
+**arXiv preprint**
+
+Paper link: [arXiv:2312.07784](https://arxiv.org/abs/2312.07784)
 
 ---
 
