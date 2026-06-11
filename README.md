@@ -5,7 +5,7 @@
 
 Repository with code to reproduce the results for **SMUG** in our paper:
 
-### 1. Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
+### Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
 
 **IEEE Journal of Selected Topics in Signal Processing**
 
