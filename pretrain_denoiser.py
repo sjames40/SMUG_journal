@@ -1,5 +1,6 @@
 """ 
-Add some comments
+Pretrains the DIDN denoiser as an image-domain denoising autoencoder using fully sampled target images plus Gaussian noise. 
+It saves the best denoiser checkpoint and training/validation metric arrays.
 """
 
 import torch
