@@ -27,12 +27,6 @@ if len(opt.gpu_ids) > 0 and torch.cuda.is_available():
     netG = nn.DataParallel(netG, device_ids=opt.gpu_ids)
 netG = netG.to(device)
 
-# vanilla_netG = DIDN(2, 2, num_chans=64, pad_data=True, global_residual=True, n_res_blocks=opt.n_res_blocks)
-# vanilla_netG.load_state_dict(torch.load(opt.netGpath, map_location=device))
-# vanilla_netG = vanilla_netG.float()
-# vanilla_netG = nn.DataParallel(vanilla_netG, device_ids=opt.gpu_ids)
-# vanilla_netG = vanilla_netG.to(device)
-# vanilla_netG.requires_grad_(False)
 
 def lambda_rule(epoch):
     lr_l = 1.0 - max(0, epoch + 1 - 20) / float(opt.epoch + 1 - 20)
