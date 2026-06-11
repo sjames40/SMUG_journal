@@ -1,3 +1,8 @@
+"""
+Fine-tunes SMUG by adding Gaussian noise at each unrolled denoiser input, and averaging the denoiser outputs. 
+Its loss combines the unrolled stability denoising term with final reconstruction MSE, and it saves the best checkpoint as vali_best.pth.
+"""
+
 import torch
 import torch.nn as nn
 import numpy as np
