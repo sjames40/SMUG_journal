@@ -1,3 +1,9 @@
+"""
+Fine-tunes Weighted-SMUG by adding a trainable weight encoder that predicts one smoothing weight for each noisy denoiser input. 
+It jointly trains the DIDN denoiser and weight encoder, 
+saving a combined checkpoint plus separate netG and weight_encoder weight files.
+"""
+
 import os
 
 import numpy as np
