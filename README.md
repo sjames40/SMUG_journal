@@ -284,4 +284,3 @@ If you use this code, please cite the SMUG paper:
 }
 
 ```
-](https://github.com/sjames40/SMUG_journal)](https://github.com/sjames40/SMUG_journal)
