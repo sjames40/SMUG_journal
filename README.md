@@ -1,4 +1,4 @@
-# Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
+[[# Robust MRI Reconstruction by Smoothed Unrolling (SMUG)
 
 [![IEEE JSTSP](https://img.shields.io/badge/IEEE-JSTSP-blue.svg)](https://ieeexplore.ieee.org/document/11199960)
 [![arXiv](https://img.shields.io/badge/arXiv-2312.07784-b31b1b.svg)](https://arxiv.org/abs/2312.07784)
@@ -27,16 +27,16 @@ The method addresses the instabilities of unrolled networks by optimizing where 
 
 ## Features
 
-* **Robust MRI Reconstruction**
+* **Robust MRI Reconstruction:**
   Enhances robustness of unrolled networks such as MoDL through systematic integration of randomized smoothing.
 
-* **Deep Unrolled Architecture**
+* **Deep Unrolled Architecture:**
   Uses unrolling techniques for efficient MRI reconstruction.
 
-* **Instability Mitigation**
+* **Instability Mitigation:**
   Reduces major instability issues in unrolled networks under perturbations and adversarial attacks.
 
-* **Weighted SMUG**
+* **Weighted SMUG:**
   Extends SMUG by using a trainable weighting encoder to perform weighted randomized smoothing.
 
 ---
@@ -284,3 +284,4 @@ If you use this code, please cite the SMUG paper:
 }
 
 ```
+](https://github.com/sjames40/SMUG_journal)](https://github.com/sjames40/SMUG_journal)
