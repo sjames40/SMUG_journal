@@ -45,12 +45,6 @@ def CG(output, tol, L, smap, mask, alised_image):
 def average_repeated_batch(tensor, batch_size, num_sample):
     return tensor.reshape(num_sample, batch_size, *tensor.shape[1:]).mean(dim=0)
 
-# def Recon_Vanilla(cg_iter, smap, mask, input):
-#     output_CG = input
-#     for i in range(cg_iter):
-#         output_NN = vanilla_netG(output_CG)
-#         output_CG = CG(output_NN, tol=opt.CGtol, L=opt.Lambda, smap=smap, mask=mask, alised_image=input)
-#     return output_CG
 
 def Recon(cg_iter, smap, mask, input, label, smoothing=False, num_sample=10, epsilon=0.01, is_train=False):
     output_CG = input
