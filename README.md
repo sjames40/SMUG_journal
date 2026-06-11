@@ -284,5 +284,3 @@ If you use this code, please cite the SMUG paper:
 }
 
 ```
-
-Please update the BibTeX entry with the official TMI citation when available.
